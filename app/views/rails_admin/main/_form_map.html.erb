@@ -1,0 +1,99 @@
+<div id="<%= field.dom_name %>" style="width:500px;height:400px"></div>
+
+<%= javascript_include_tag ("http://maps.google.com/maps/api/js?key=#{field.google_api_key}&sensor=false") %>
+
+<script type="text/javascript">
+    jQuery(function () {
+        var marker = null;
+        var latlng = new google.maps.LatLng(<%= form.object.send(field.name) || field.default_latitude %>, <%= form.object.send(field.longitude_field) || field.default_longitude %>);
+
+        var myOptions = {
+            zoom: <%= field.default_zoom_level %>,
+            center:latlng,
+            mapTypeId:google.maps.MapTypeId.ROADMAP,
+            panControl:false,
+            mapTypeControl:true,
+            streetViewControl: false,
+            scaleControl: false,
+            mapTypeControlOptions:{
+                style:google.maps.MapTypeControlStyle.HORIZONTAL_BAR,
+                position:google.maps.ControlPosition.TOP_RIGHT
+            },
+            zoomControl:true,
+            zoomControlOptions:{
+                style:google.maps.ZoomControlStyle.SMALL,
+                position:google.maps.ControlPosition.TOP_LEFT
+            }
+        };
+
+        var map = new google.maps.Map(document.getElementById("<%= field.dom_name %>"), myOptions);
+        var geocoder = new google.maps.Geocoder();
+
+        <% if form.object.send(field.latitude_field) && form.object.send(field.longitude_field) %>
+        marker = new google.maps.Marker({
+            position:new google.maps.LatLng(<%= form.object.send(field.latitude_field) %>, <%= form.object.send(field.longitude_field) %>),
+            draggable:true,
+          //  animation:google.maps.Animation.DROP,
+            map:map
+        });
+        google.maps.event.addListener(marker, 'click', toggleBounce);
+        <% end %>
+        var old_address = "";
+        jQuery("<%= "##{field.house_dom_name}, ##{field.street_dom_name}, ##{field.city_dom_name}, ##{field.state_dom_name}" %>").bind("blur", function () {
+            // geocode based on this location
+            var street = $("#<%= field.street_dom_name %>").val(),
+                    house = $("#<%= field.house_dom_name %>").val(),
+                    city = $("#<%= field.city_dom_name %>").text(),
+                    state = $("#<%= field.state_dom_name %>").text(),
+                    adress_string = "",
+                    changed = false;
+
+            if (street.length === 0 || city.length === 0 || state.length === 0 || house.length === 0)
+                return;
+
+            if (house.length > 0)
+                street = street + ' ' + house;
+
+            adress_string = [street, city, state].join(", ");//[state, city, street ].join(", ");
+
+            if (adress_string === old_address)
+                return;
+
+            old_address = adress_string;
+
+            geocoder.geocode({ 'address':adress_string }, function (results, status) {
+                if (!results || results.length === 0 || status !== "OK") return;
+
+                var location = results[0].geometry.location;
+                updateLocation(location)
+            });
+        });
+
+        function updateLocation(location) {
+            if (marker) {
+                marker.setPosition(location);
+            } else {
+                marker = new google.maps.Marker({
+                    position:location,
+                    title: 'A',
+                   // animation:google.maps.Animation.DROP,
+                    map:map,
+                    draggable:true,
+                    flat: true
+                });
+
+                google.maps.event.addListener(marker, 'dragend', function() {
+                    jQuery("#<%= field.latitude_dom_name %>").val(marker.getPosition().lat());
+                    jQuery("#<%= field.longitude_dom_name %>").val(marker.getPosition().lng());
+                });
+            }
+
+            map.setCenter(location);
+            jQuery("#<%= field.latitude_dom_name %>").val(location.lat());
+            jQuery("#<%= field.longitude_dom_name %>").val(location.lng());
+        }
+    });
+</script>
+
+<%#= form.send :hidden_field, field.latitude_field, :id => field.latitude_dom_name %>
+<%#= form.send :hidden_field, field.longitude_field, :id => field.longitude_dom_name %>

@@ -5,11 +5,19 @@ module RailsAdmin::Config::Fields::Types
     # THe name of the corresponding longitude field to match the latitude field
     # in this object.
     register_instance_option(:longitude_field) do
-      "longitude"
+      "lng"
     end
 
-    register_instance_option(:address_field) do
-      "address"
+    register_instance_option(:latitude_field) do
+      "lnt"
+    end
+
+    register_instance_option(:street_field) do
+      "street"
+    end
+
+    register_instance_option(:house_field) do
+      "house"
     end
 
     register_instance_option(:city_field) do
@@ -32,12 +40,12 @@ module RailsAdmin::Config::Fields::Types
     # Latitude value to display in the map if the latitude attribute is nil
     # (Otherwise the location defaults to (0,0) which is in the Gulf of Guinea
     register_instance_option(:default_latitude) do
-      40.711417 # Latitude of Jersey City, NJ
+      55.7534
     end
 
     # Longitude value to display if the longitude attribute is nil
     register_instance_option(:default_longitude) do
-      74.0647 # Longitude of Jersey City, NJ
+      37.622
     end
 
     # Default zoom level of the map
@@ -50,15 +58,19 @@ module RailsAdmin::Config::Fields::Types
     end
 
     def latitude_dom_name
-      "#{bindings[:form].object_name}_#{@name}"
+      "#{bindings[:form].object_name}_#{latitude_field}"
     end
 
     def longitude_dom_name
       "#{bindings[:form].object_name}_#{longitude_field}"
     end
 
-    def address_dom_name
-      "#{bindings[:form].object_name}_#{address_field}"
+    def street_dom_name
+      "#{bindings[:form].object_name}_#{street_field}"
+    end
+
+    def house_dom_name
+      "#{bindings[:form].object_name}_#{house_field}"
     end
 
     def city_dom_name
