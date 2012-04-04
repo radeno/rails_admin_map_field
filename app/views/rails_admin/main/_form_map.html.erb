@@ -42,26 +42,26 @@
         jQuery("<%= "##{field.house_dom_name}, ##{field.street_dom_name}, ##{field.city_dom_name}, ##{field.state_dom_name}" %>").bind("blur", function () {
             // geocode based on this location
             var street = $("#<%= field.street_dom_name %>").val(),
-                    house = $("#<%= field.house_dom_name %>").val(),
-                    city = $("#<%= field.city_dom_name %>").text(),
-                    state = $("#<%= field.state_dom_name %>").text(),
-                    adress_string = "",
-                    changed = false;
+                house = $("#<%= field.house_dom_name %>").val(),
+                city = $("#<%= field.city_dom_name %>").val(),
+                state = $("#<%= field.state_dom_name %>").val(),
+                address_string = "",
+                changed = false;
 
-            if (street.length === 0 || city.length === 0 || state.length === 0 || house.length === 0)
+            if (city.length === 0 || state.length === 0 || house.length === 0)
                 return;
 
             if (house.length > 0)
                 street = street + ' ' + house;
 
-            adress_string = [street, city, state].join(", ");//[state, city, street ].join(", ");
+            address_string = [street, city, state].join(", ");//[state, city, street ].join(", ");
 
-            if (adress_string === old_address)
+            if (address_string === old_address)
                 return;
 
-            old_address = adress_string;
+            old_address = address_string;
 
-            geocoder.geocode({ 'address':adress_string }, function (results, status) {
+            geocoder.geocode({ 'address':address_string }, function (results, status) {
                 if (!results || results.length === 0 || status !== "OK") return;
 
                 var location = results[0].geometry.location;
@@ -95,5 +95,5 @@
     });
 </script>
 
-<%#= form.send :hidden_field, field.latitude_field, :id => field.latitude_dom_name %>
-<%#= form.send :hidden_field, field.longitude_field, :id => field.longitude_dom_name %>
+<%= form.send :hidden_field, field.latitude_field, :id => field.latitude_dom_name %>
+<%= form.send :hidden_field, field.longitude_field, :id => field.longitude_dom_name %>
