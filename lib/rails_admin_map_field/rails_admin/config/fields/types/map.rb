@@ -54,31 +54,31 @@ module RailsAdmin::Config::Fields::Types
     end
 
     def dom_name
-      "#{bindings[:form].object_name}_#{@name}_#{longitude_field}"
+      "#{bindings[:form].object_name.gsub(/\]\[|[^-a-zA-Z0-9:.]/, "_").sub(/_$/, "")}#{@name}_#{longitude_field}"
     end
 
     def latitude_dom_name
-      "#{bindings[:form].object_name}_#{latitude_field}"
+      "#{bindings[:form].object_name.gsub(/\]\[|[^-a-zA-Z0-9:.]/, "_").sub(/_$/, "")}_#{latitude_field}"
     end
 
     def longitude_dom_name
-      "#{bindings[:form].object_name}_#{longitude_field}"
+      "#{bindings[:form].object_name.gsub(/\]\[|[^-a-zA-Z0-9:.]/, "_").sub(/_$/, "")}_#{longitude_field}"
     end
 
     def street_dom_name
-      "#{bindings[:form].object_name}_#{street_field}"
+      "#{bindings[:form].object_name.gsub(/\]\[|[^-a-zA-Z0-9:.]/, "_").sub(/_$/, "")}_#{street_field}"
     end
 
     def house_dom_name
-      "#{bindings[:form].object_name}_#{house_field}"
+      "#{bindings[:form].object_name.gsub(/\]\[|[^-a-zA-Z0-9:.]/, "_").sub(/_$/, "")}_#{house_field}"
     end
 
     def city_dom_name
-      "#{bindings[:form].object_name}_#{city_field}"
+      "#{bindings[:form].object_name.gsub(/\]\[|[^-a-zA-Z0-9:.]/, "_").sub(/_$/, "")}_#{city_field}"
     end
 
     def state_dom_name
-      "#{bindings[:form].object_name}_#{state_field}"
+      "#{bindings[:form].object_name.gsub(/\]\[|[^-a-zA-Z0-9:.]/, "_").sub(/_$/, "")}_#{state_field}"
     end
   end
 end
